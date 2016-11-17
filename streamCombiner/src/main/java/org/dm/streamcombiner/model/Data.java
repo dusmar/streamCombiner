@@ -1,11 +1,13 @@
 package org.dm.streamcombiner.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
  * @author Dusan Maruscak
  *
  */
+@XmlRootElement
 public class Data  implements Cloneable {
 
 	private Long timestamp;
