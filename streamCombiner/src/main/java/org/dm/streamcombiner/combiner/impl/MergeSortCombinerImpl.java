@@ -39,13 +39,11 @@ public class MergeSortCombinerImpl implements Combiner {
 		while (!heap.isEmpty()) {
 			MergeSortEntry entry = heap.poll();
 			output.write(entry.getData().toJSONString().getBytes());
-			if (entry.getDecorator().hasNextData()) {
-				DataStreamDecorator decorator = entry.getDecorator();
-				try {
-					heap.add(new MergeSortEntry(decorator.nextData(), decorator));
-				} catch (ReadFromStreamException e) {
-					// TODO LOG ERROR
-				}
+			DataStreamDecorator decorator = entry.getDecorator();
+			try {
+				insertNewEntyIntoHeap(decorator, heap);
+			} catch (ReadFromStreamException e) {
+				// TODO error handling
 			}
 		}
 
@@ -53,15 +51,20 @@ public class MergeSortCombinerImpl implements Combiner {
 
 	private void initHeap(MergePriorityQueue heap, InputStream[] inputs) {
 		for (int i = 0; i < inputs.length; ++i) {
+			DataStreamDecorator decorator;
 			try {
-				DataStreamDecorator decorator = DataStreamDecoratorFactory.getDataStreamDecorator(inputs[i]);
-				if (decorator.hasNextData()) {
-					heap.add(new MergeSortEntry(decorator.nextData(), decorator));
-				}
+				decorator = DataStreamDecoratorFactory.getDataStreamDecorator(inputs[i]);
+				insertNewEntyIntoHeap(decorator, heap);
 			} catch (ReadFromStreamException e) {
-				// TODO LOG ERROR
+				// TODO error handling
 			}
 		}
+	}
+
+	private void insertNewEntyIntoHeap(DataStreamDecorator decorator, MergePriorityQueue heap) throws ReadFromStreamException {
+		while (decorator.hasNextData() && !heap.add(new MergeSortEntry(decorator.nextData(), decorator))) {
+		}
+
 	}
 
 	static class MergeSortEntry implements Comparable<MergeSortEntry> {
