@@ -1,5 +1,6 @@
 package org.dm.streamcombiner.combiner;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -21,7 +22,7 @@ public interface Combiner {
 	 * @param inputs
 	 *            array of input stream to combine. Input streams provide data
 	 *            in XML format. Data in input stream is sorted by
-	 *            timestamp.Definition of XML format: <data>
+	 *            timestamp. Definition of XML format: <data>
 	 *            <timestamp>123456789</timeStamp> <amount>1234.567890</amount>
 	 *            </data>
 	 * 
@@ -29,7 +30,8 @@ public interface Combiner {
 	 *            combined stream. Output is JSON stream. Output data are sorted
 	 *            by timestamp. Definition of JSON format: { "data":
 	 *            {timestamp":123456789, "amount":"1234.567890" }}
+	 * @throws IOException 
 	 */
-	public void combine(InputStream[] inputs, OutputStream output);
+	public void combine(InputStream[] inputs, OutputStream output) throws IOException;
 
 }

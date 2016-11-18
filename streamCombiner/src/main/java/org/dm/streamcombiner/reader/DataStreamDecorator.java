@@ -3,6 +3,7 @@ package org.dm.streamcombiner.reader;
 import java.io.InputStream;
 
 import org.dm.streamcombiner.model.Data;
+import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 
 /**
@@ -12,7 +13,7 @@ import org.dm.streamcombiner.model.Data;
  */
 public interface DataStreamDecorator {
 	
-	public Data nextData();
+	public Data nextData() throws ReadFromStreamException;
 	
 	public boolean hasNextData();
 	

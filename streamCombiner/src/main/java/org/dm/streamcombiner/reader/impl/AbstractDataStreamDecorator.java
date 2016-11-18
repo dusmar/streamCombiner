@@ -2,9 +2,13 @@ package org.dm.streamcombiner.reader.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.NoSuchElementException;
+
+import javax.xml.bind.JAXBException;
 
 import org.dm.streamcombiner.model.Data;
 import org.dm.streamcombiner.reader.DataStreamDecorator;
+import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 /**
  * 
@@ -20,16 +24,18 @@ public abstract class AbstractDataStreamDecorator implements DataStreamDecorator
 		this.stream = stream;
 	}
 
-	abstract protected Data getNextDataInner();
+	abstract protected Data getNextDataInner() throws ReadFromStreamException;
 
 	@Override
-	public Data nextData() {
+	public Data nextData() throws ReadFromStreamException {
+		if (nextData==null) {
+			throw new NoSuchElementException();
+		}
 		Data retData = null;
 		try {
 			retData = (Data) nextData.clone();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		this.nextData = getNextDataInner();
 		return retData;

@@ -7,17 +7,17 @@ import java.io.OutputStream;
 import org.dm.streamcombiner.combiner.Combiner;
 import org.dm.streamcombiner.model.Data;
 import org.dm.streamcombiner.reader.DataStreamDecorator;
+import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 import org.dm.streamcombiner.reader.impl.DataStreamDecoratorFactory;
 
 /**
  * 
- * This is an implementation of algorithm to merge entries from all individual
- * inputs streams. It assumes that the entries in each input stream are sorted
- * by timestamp field in ascending order. First entry from each stream is
- * inserted into a heap. Using EXTRACT-MIN the smallest element X of the heap is
- * obtained and inserted in output stream. Assuming that X came from stream S,
- * then  the next element from stream S is taken  and inserted it into the heap.
- * Continuing in this fashion yields the merged stream
+ * This class contains implementation of (@link Combiner) based on merge sort.
+ * First entry from each stream is inserted into a heap. Using EXTRACT-MIN the
+ * smallest element X of the heap is obtained and written into output stream.
+ * Assuming that X came from stream S, then the next element from stream S is
+ * taken and inserted into the heap. Continuing in this fashion yields the
+ * merged stream
  *
  * <p>
  * Implementation note: this implementation provides time complexity log(k) * n
@@ -28,21 +28,24 @@ import org.dm.streamcombiner.reader.impl.DataStreamDecoratorFactory;
 
 public class MergeSortCombinerImpl implements Combiner {
 
+	/**
+	 * @throws IOException
+	 * @inheritDoc
+	 */
 	@Override
-	public void combine(InputStream[] inputs, OutputStream output) {
+	public void combine(InputStream[] inputs, OutputStream output) throws IOException {
 		MergePriorityQueue heap = new MergePriorityQueue();
 		initHeap(heap, inputs);
 		while (!heap.isEmpty()) {
 			MergeSortEntry entry = heap.poll();
-			try {
-				output.write(entry.getData().toJSONString().getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-				// TODO error handling
-			}
+			output.write(entry.getData().toJSONString().getBytes());
 			if (entry.getDecorator().hasNextData()) {
 				DataStreamDecorator decorator = entry.getDecorator();
-				heap.add(new MergeSortEntry(decorator.nextData(), decorator));
+				try {
+					heap.add(new MergeSortEntry(decorator.nextData(), decorator));
+				} catch (ReadFromStreamException e) {
+					// TODO LOG ERROR
+				}
 			}
 		}
 
@@ -50,10 +53,13 @@ public class MergeSortCombinerImpl implements Combiner {
 
 	private void initHeap(MergePriorityQueue heap, InputStream[] inputs) {
 		for (int i = 0; i < inputs.length; ++i) {
-			DataStreamDecorator decorator = DataStreamDecoratorFactory
-					.getDataStreamDecorator(inputs[i]);
-			if (decorator.hasNextData()) {
-				heap.add(new MergeSortEntry(decorator.nextData(), decorator));
+			try {
+				DataStreamDecorator decorator = DataStreamDecoratorFactory.getDataStreamDecorator(inputs[i]);
+				if (decorator.hasNextData()) {
+					heap.add(new MergeSortEntry(decorator.nextData(), decorator));
+				}
+			} catch (ReadFromStreamException e) {
+				// TODO LOG ERROR
 			}
 		}
 	}
@@ -86,8 +92,7 @@ public class MergeSortCombinerImpl implements Combiner {
 
 		@Override
 		public int compareTo(MergeSortEntry o) {
-			return this.getData().getTimestamp()
-					.compareTo(o.getData().getTimestamp());
+			return this.getData().getTimestamp().compareTo(o.getData().getTimestamp());
 		}
 
 	}

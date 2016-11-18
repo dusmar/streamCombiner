@@ -8,6 +8,7 @@ import java.io.SequenceInputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -17,6 +18,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.dm.streamcombiner.model.Data;
 import org.dm.streamcombiner.reader.DataStreamDecorator;
+import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 /**
  * 
@@ -35,12 +37,12 @@ public class StAXDataStreamDecorator extends AbstractDataStreamDecorator impleme
 
 	private XMLEventReader eventReader;
 
-	public StAXDataStreamDecorator(InputStream stream) {
+	public StAXDataStreamDecorator(InputStream stream) throws ReadFromStreamException {
 		super(stream);
 		init();
 	}
 
-	private void init() {
+	private void init() throws ReadFromStreamException {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		List<InputStream> streams = Arrays.asList(new ByteArrayInputStream(START_WRAP_TAG.getBytes()), getStream(),
 				new ByteArrayInputStream(END_WRAP_TAG.getBytes()));
@@ -49,13 +51,15 @@ public class StAXDataStreamDecorator extends AbstractDataStreamDecorator impleme
 		try {
 			this.eventReader = factory.createXMLEventReader(new BufferedReader(new InputStreamReader(seqStream)));
 			setNextData(getNextDataInner());
-		} catch (XMLStreamException e) {
-			e.printStackTrace(); // TODO error
+		} catch (ReadFromStreamException re) {
+			throw re;
+		} catch (XMLStreamException xe) {
+			throw new ReadFromStreamException(xe);
 		}
 
 	}
 
-	protected Data getNextDataInner() {
+	protected Data getNextDataInner() throws ReadFromStreamException {
 		Data data = null;
 		int numberOfEvent = 0;
 
@@ -80,12 +84,10 @@ public class StAXDataStreamDecorator extends AbstractDataStreamDecorator impleme
 					}
 				}
 			} catch (XMLStreamException e) {
-				e.printStackTrace();
-				// TODO error handling
+				throw new ReadFromStreamException(e);
 			}
 			numberOfEvent++;
 		}
-
 		return null;
 	}
 
