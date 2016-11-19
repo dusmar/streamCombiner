@@ -50,8 +50,8 @@ public class MergeSortCombinerImplTest {
 
 	
 	
-	private String readFile(String file) throws IOException {
-		ClassLoader classLoader = getClass().getClassLoader();
+	private static String readFile(String file) throws IOException {
+		ClassLoader classLoader = MergeSortCombinerImplTest.class.getClass().getClassLoader();
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(file)));
 		String line = null;

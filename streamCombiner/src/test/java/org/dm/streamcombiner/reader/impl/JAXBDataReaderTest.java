@@ -5,6 +5,12 @@ import java.io.InputStreamReader;
 
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
+/**
+ * Tests for {@link StxDataReader JAXBDataReader}. However all tests method are in parent class
+ *
+ * @author Dusan Maruscak
+ *
+ */
 public class JAXBDataReaderTest extends DataReaderTest {
 
 	@Override

@@ -6,11 +6,15 @@ import java.io.InputStreamReader;
 
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+/**
+ * 
+ * Tests performance of StAXDataReader vs. JAXBDataReader. Just one run is executed however Stax implementation should be always faster :) 
+ * 
+ * @author Dusan Maruscak
+ *
+ */
 public class DataReaderPerformanceTest {
 
 	private static final int EXPECTED_NUMBER_OF_LINES = 70656;

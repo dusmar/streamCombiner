@@ -51,7 +51,7 @@ public abstract class DataReaderTest {
 	}
 
 	/**
-	 * Tests hasNextData (expects true) and nextData (compare result with
+	 * Tests nextData (compare result with
 	 * expected values)
 	 * 
 	 * @param expectedTimestamp

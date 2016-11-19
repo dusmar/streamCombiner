@@ -27,6 +27,11 @@ import org.dm.streamcombiner.reader.impl.DataReaderFactory;
  */
 
 public class MergeSortCombinerImpl implements Combiner {
+	
+	protected MergeSortCombinerImpl(){
+		super();
+	}
+	
 
 	/**
 	 * @throws IOException
@@ -46,8 +51,8 @@ public class MergeSortCombinerImpl implements Combiner {
 				// TODO error handling
 			}
 		}
-
 	}
+
 
 	private void initHeap(MergePriorityQueue heap, InputStream[] inputs) {
 		for (int i = 0; i < inputs.length; ++i) {

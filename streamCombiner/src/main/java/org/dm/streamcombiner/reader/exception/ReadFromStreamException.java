@@ -2,6 +2,7 @@ package org.dm.streamcombiner.reader.exception;
 
 /**
  * 
+ * 
  * @author Dusan Maruscak
  *
  */
