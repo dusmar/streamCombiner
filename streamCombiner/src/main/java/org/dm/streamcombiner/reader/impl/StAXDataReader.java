@@ -1,14 +1,8 @@
 package org.dm.streamcombiner.reader.impl;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.io.SequenceInputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -17,19 +11,28 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import org.dm.streamcombiner.model.Data;
-import org.dm.streamcombiner.reader.DataStreamDecorator;
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 /**
+ * Reads Data objects from a buffered character-input stream. Uses Java
+ * Streaming API for XML (Java StAX) to provide the efficient parsing of XML
+ * fragments. Data objects are created from parsed fragments.
  * 
- * @author Dusan Maruscak
+ * Streaming API for XML requires valid XML document to be streamed. According
+ * to XML spec, an XML document must have a single root element. If input stream
+ * contains just fragments, it may be wraped by (@see RootWrapInputStreamReader)
+ * 
  *
+ * @see FileReader
+ * @see InputStreamReader
+ * @see java.nio.file.Files#newBufferedReader
+ *
+ * @author Dusan Maruscak
  */
-public class StAXDataStreamDecorator extends AbstractDataStreamDecorator implements DataStreamDecorator {
+
+public class StAXDataReader extends DataReader {
 
 	public static final Integer MAX_NUMBER_OF_EVENTS_TO_FOUND_AMOUNT = 100;
-	public static final String START_WRAP_TAG = "<root>";
-	public static final String END_WRAP_TAG = "</root>";
 
 	public static final String MESSAGE_ELEMENT_NAME = "data";
 	public static final String TIMESTAMP_ELEMENT_NAME = "timestamp";
@@ -37,29 +40,23 @@ public class StAXDataStreamDecorator extends AbstractDataStreamDecorator impleme
 
 	private XMLEventReader eventReader;
 
-	public StAXDataStreamDecorator(InputStream stream) throws ReadFromStreamException {
-		super(stream);
-		init();
+	public StAXDataReader(BufferedReader reader) throws ReadFromStreamException {
+		super(reader);
+		init(reader);
 	}
 
-	private void init() throws ReadFromStreamException {
+	private void init(BufferedReader reader) throws ReadFromStreamException {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
-		List<InputStream> streams = Arrays.asList(new ByteArrayInputStream(START_WRAP_TAG.getBytes()), getStream(),
-				new ByteArrayInputStream(END_WRAP_TAG.getBytes()));
-		SequenceInputStream seqStream = new SequenceInputStream(Collections.enumeration(streams));
-
 		try {
-			this.eventReader = factory.createXMLEventReader(new BufferedReader(new InputStreamReader(seqStream)));
-			setNextData(getNextDataInner());
-		} catch (ReadFromStreamException re) {
-			throw re;
+			this.eventReader = factory.createXMLEventReader(reader);
 		} catch (XMLStreamException xe) {
 			throw new ReadFromStreamException(xe);
+
 		}
 
 	}
 
-	protected Data getNextDataInner() throws ReadFromStreamException {
+	public Data readData() throws ReadFromStreamException {
 		Data data = null;
 		int numberOfEvent = 0;
 

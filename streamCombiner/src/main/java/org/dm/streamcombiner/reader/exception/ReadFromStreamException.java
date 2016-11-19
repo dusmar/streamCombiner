@@ -1,5 +1,10 @@
 package org.dm.streamcombiner.reader.exception;
 
+/**
+ * 
+ * @author Dusan Maruscak
+ *
+ */
 public class ReadFromStreamException extends Exception {
 	static final long serialVersionUID = 7818375828146090155L;
 

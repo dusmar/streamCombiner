@@ -2,31 +2,30 @@ package org.dm.streamcombiner.reader.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.NoSuchElementException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.dm.streamcombiner.model.Data;
-import org.dm.streamcombiner.reader.DataStreamDecorator;
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 /**
+ * Reads Data objects from a buffered character-input stream. Uses JAXB API to
+ * convert XML fragments to Data objects. Assumes that input stream contains
+ * just fragments, no root element is presented in.
+ * 
  * 
  * @author Dusan Maruscak
  *
  */
-public class JAXBDataStreamDecorator extends AbstractDataStreamDecorator implements DataStreamDecorator {
+public class JAXBDataReader extends DataReader {
 
 	private Unmarshaller unmarshaller;
-	private BufferedReader in;
 
-	protected JAXBDataStreamDecorator(InputStream stream) throws ReadFromStreamException {
-		super(stream);
+	protected JAXBDataReader(BufferedReader reader) throws ReadFromStreamException {
+		super(reader);
 		init();
 	}
 
@@ -35,19 +34,15 @@ public class JAXBDataStreamDecorator extends AbstractDataStreamDecorator impleme
 			JAXBContext jaxbContext;
 			jaxbContext = JAXBContext.newInstance(Data.class);
 			this.unmarshaller = jaxbContext.createUnmarshaller();
-			this.in = new BufferedReader(new InputStreamReader(getStream()));
-			setNextData(getNextDataInner());
-		} catch (ReadFromStreamException e) {
-			throw e;
 		} catch (JAXBException e) {
 			throw new ReadFromStreamException(e);
 		}
 	}
 
-	protected Data getNextDataInner() throws ReadFromStreamException {
+	public Data readData() throws ReadFromStreamException {
 		String line = null;
 		try {
-			if ((line = in.readLine()) != null) {
+			if ((line = readLine()) != null) {
 				StringReader reader = new StringReader(line);
 				return (Data) unmarshaller.unmarshal(reader);
 			}

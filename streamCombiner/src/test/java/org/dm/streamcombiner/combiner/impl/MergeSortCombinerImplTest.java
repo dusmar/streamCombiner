@@ -7,8 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.dm.streamcombiner.combiner.Combiner;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class MergeSortCombinerImplTest {
 

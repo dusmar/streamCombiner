@@ -17,18 +17,16 @@ public interface Combiner {
 	 * 
 	 * Algorithm to merge entries from all individual inputs streams. Both input
 	 * and output streams are sorted by timestamp field. If several inputs
-	 * provide data with the same timestamp - amounts should be merged. 
+	 * provide data with the same timestamp - amounts are merged. 
 	 *
 	 * @param inputs
 	 *            array of input stream to combine. Input streams provide data
-	 *            in XML format. Data in input stream is sorted by
-	 *            timestamp. Definition of XML format: <data>
+	 *            in XML format. Definition of XML format: <data>
 	 *            <timestamp>123456789</timeStamp> <amount>1234.567890</amount>
 	 *            </data>
 	 * 
 	 * @param output
-	 *            combined stream. Output is JSON stream. Output data are sorted
-	 *            by timestamp. Definition of JSON format: { "data":
+	 *            combined stream. Output is JSON stream.  Definition of JSON format: { "data":
 	 *            {timestamp":123456789, "amount":"1234.567890" }}
 	 * @throws IOException 
 	 */

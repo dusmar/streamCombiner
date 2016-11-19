@@ -1,5 +1,7 @@
 package org.dm.streamcombiner.model;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -8,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class Data  implements Cloneable {
+public class Data implements Cloneable, Serializable {
 
 	private Long timestamp;
 	private String amount;
