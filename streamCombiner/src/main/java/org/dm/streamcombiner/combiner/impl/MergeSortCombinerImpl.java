@@ -27,11 +27,10 @@ import org.dm.streamcombiner.reader.impl.DataReaderFactory;
  */
 
 public class MergeSortCombinerImpl implements Combiner {
-	
-	protected MergeSortCombinerImpl(){
+
+	protected MergeSortCombinerImpl() {
 		super();
 	}
-	
 
 	/**
 	 * @throws IOException
@@ -40,29 +39,24 @@ public class MergeSortCombinerImpl implements Combiner {
 	@Override
 	public void combine(InputStream[] inputs, OutputStream output) throws IOException {
 		MergePriorityQueue heap = new MergePriorityQueue();
-		initHeap(heap, inputs);
-		while (!heap.isEmpty()) {
-			MergeSortEntry entry = heap.poll();
-			output.write(entry.getData().toJSONString().getBytes());
-			DataReader decorator = entry.getDecorator();
-			try {
+		try {
+			initHeap(heap, inputs);
+			while (!heap.isEmpty()) {
+				MergeSortEntry entry = heap.poll();
+				output.write(entry.getData().toJSONString().getBytes());
+				DataReader decorator = entry.getDecorator();
 				insertNewEntryIntoHeap(decorator, heap);
-			} catch (ReadFromStreamException e) {
-				// TODO error handling
 			}
+		} catch (ReadFromStreamException e) {
+			// TODO error handling
 		}
+
 	}
 
-
-	private void initHeap(MergePriorityQueue heap, InputStream[] inputs) {
+	private void initHeap(MergePriorityQueue heap, InputStream[] inputs) throws ReadFromStreamException {
 		for (int i = 0; i < inputs.length; ++i) {
-			DataReader decorator;
-			try {
-				decorator = DataReaderFactory.getDataReader(inputs[i]);
-				insertNewEntryIntoHeap(decorator, heap);
-			} catch (ReadFromStreamException e) {
-				// TODO error handling
-			}
+			DataReader decorator = DataReaderFactory.getDataReader(inputs[i]);
+			insertNewEntryIntoHeap(decorator, heap);
 		}
 	}
 
