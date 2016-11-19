@@ -13,11 +13,12 @@ import org.dm.streamcombiner.reader.impl.DataReaderFactory;
 /**
  * 
  * This class contains implementation of {@link Combiner} based on merge sort.
- * First entry from each stream is inserted into a heap. Using EXTRACT-MIN the
+ * First entry from each stream is inserted into a heap
+ * {@link MergePriorityQueue MergePriorityQueue}. Using EXTRACT-MIN the
  * smallest element X of the heap is obtained and written into output stream.
  * Assuming that X came from stream S, then the next element from stream S is
- * taken and inserted into the heap. Continuing in this fashion yields the
- * merged stream
+ * read and added into the heap. Continuing in this fashion yields the merged
+ * stream.
  *
  * <p>
  * Implementation note: this implementation provides time complexity log(k) * n

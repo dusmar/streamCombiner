@@ -46,7 +46,7 @@ public abstract class DataReaderTest {
 		DataReader decorator = getDecorator("Data1.xml");
 		testItemFully(123456781L, "1231.567890", decorator);
 		testItemFully(123456784L, "1234.567890", decorator);
-		testItemFully(123456787L, "1236.567890", decorator);
+		testItemFully(123456787L, "1237.567890", decorator);
 		Assert.assertNull(decorator.readData());
 	}
 

@@ -52,32 +52,32 @@ public class Main {
 		configuration.load(input);
 	}
 
-//	/**
-//	 * Read content of file. Just just to create response of test servers.
-//	 * 
-//	 * @param file
-//	 * @return
-//	 * @throws IOException
-//	 */
-//	private static String readFile(String file) throws IOException {
-//		ClassLoader classLoader = Main.class.getClassLoader();
-//
-//		BufferedReader reader = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(file)));
-//		String line = null;
-//		StringBuilder stringBuilder = new StringBuilder();
-//		String ls = System.getProperty("line.separator");
-//
-//		try {
-//			while ((line = reader.readLine()) != null) {
-//				stringBuilder.append(line);
-//				stringBuilder.append(ls);
-//			}
-//
-//			return stringBuilder.toString();
-//		} finally {
-//			reader.close();
-//		}
-//	}
+	/**
+	 * Read content of file. Just just to create response of test servers.
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private static String readFile(String file) throws IOException {
+		ClassLoader classLoader = Main.class.getClassLoader();
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(file)));
+		String line = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		String ls = System.getProperty("line.separator");
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				stringBuilder.append(line);
+				stringBuilder.append(ls);
+			}
+
+			return stringBuilder.toString();
+		} finally {
+			reader.close();
+		}
+	}
 
 	/**
 	 * Prepares input, array of InputStream based on configuration
@@ -109,19 +109,19 @@ public class Main {
 	 */
 	public static void main(String[] args) throws IOException {
 		initConfiguration();
-		//SingleThreadedServer server1, server2, server3;
-		//new Thread(server1 = new SingleThreadedServer(8080, readFile("Data1.xml"))).start();
-		//new Thread(server2 = new SingleThreadedServer(8081, readFile("Data2.xml"))).start();
-		//new Thread(server3 = new SingleThreadedServer(8082, readFile("Data3.xml"))).start();
+		SingleThreadedServer server1, server2, server3;
+		new Thread(server1 = new SingleThreadedServer(8080, readFile("Data1.xml"))).start();
+		new Thread(server2 = new SingleThreadedServer(8081, readFile("Data2.xml"))).start();
+		new Thread(server3 = new SingleThreadedServer(8082, readFile("Data3.xml"))).start();
 		InputStream[] inputs = getInputStreams();
 		Combiner combiner = CombinerFactory.getCombiner();
 		combiner.combine(inputs, System.out);
 		for (InputStream input : inputs) {
 			input.close();
 		}
-		//server1.stop();
-		//server2.stop();
-		//server3.stop();
+		server1.stop();
+		server2.stop();
+		server3.stop();
 	}
 
 }
