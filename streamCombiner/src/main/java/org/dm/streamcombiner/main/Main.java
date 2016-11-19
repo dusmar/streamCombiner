@@ -1,7 +1,9 @@
 package org.dm.streamcombiner.main;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Properties;
@@ -24,7 +26,8 @@ public class Main {
 	 * Create socket to connect to server. Timeouts are set to 2000 ms if input
 	 * stream hang.
 	 * 
-	 * @param host in format server:port
+	 * @param host
+	 *            in format server:port
 	 * @return InputStream to read data from server
 	 * @throws IOException
 	 */
@@ -51,6 +54,7 @@ public class Main {
 
 //	/**
 //	 * Read content of file. Just just to create response of test servers.
+//	 * 
 //	 * @param file
 //	 * @return
 //	 * @throws IOException
@@ -77,11 +81,15 @@ public class Main {
 
 	/**
 	 * Prepares input, array of InputStream based on configuration
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
 	public static InputStream[] getInputStreams() throws IOException {
 		String hosts = configuration.getProperty("hosts");
+		if (hosts==null || hosts.isEmpty()) {
+			return new InputStream[0];
+		}
 		String[] hostsArray = hosts.split(",");
 		InputStream[] inputs = new InputStream[hostsArray.length];
 		int i = 0;
@@ -114,7 +122,6 @@ public class Main {
 		//server1.stop();
 		//server2.stop();
 		//server3.stop();
-
 	}
 
 }

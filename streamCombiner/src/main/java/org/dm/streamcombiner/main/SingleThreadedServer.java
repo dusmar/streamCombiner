@@ -6,58 +6,49 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-
+/**
+ * Used for test purposes to simulate host (server) which handle requests from
+ * client (application) and returns data in expected format
+ * 
+ * @author Dusan Maruscak
+ *
+ */
 public class SingleThreadedServer implements Runnable {
 
-	protected int serverPort = 8080;
+	protected int serverPort;
 	protected ServerSocket serverSocket = null;
 	protected boolean isStopped = false;
-	protected Thread runningThread = null;
 	private String response = null;
 
-	public SingleThreadedServer(int port, String response) throws IOException {
+	public SingleThreadedServer(int port, String response) {
 		this.serverPort = port;
 		this.response = response;
 	}
 
 	public void run() {
-		synchronized (this) {
-			this.runningThread = Thread.currentThread();
-		}
 		openServerSocket();
-
 		while (!isStopped()) {
 			Socket clientSocket = null;
 			try {
 				clientSocket = this.serverSocket.accept();
 			} catch (IOException e) {
 				if (isStopped()) {
-					System.out.println("Server Stopped.");
 					return;
 				}
 				throw new RuntimeException("Error accepting client connection", e);
 			}
 			try {
-				processClientRequest(clientSocket);
+				handleClientRequest(clientSocket);
 			} catch (IOException e) {
 				// log exception and go on to next request.
 			}
 		}
-
-		System.out.println("Server Stopped.");
 	}
 
-	private void processClientRequest(Socket clientSocket) throws IOException {
+	private void handleClientRequest(Socket clientSocket) throws IOException {
 		OutputStream output = clientSocket.getOutputStream();
 		InputStream input = clientSocket.getInputStream();
-
 		output.write(response.getBytes());
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		output.close();
 		input.close();
 	}
@@ -79,7 +70,7 @@ public class SingleThreadedServer implements Runnable {
 		try {
 			this.serverSocket = new ServerSocket(this.serverPort);
 		} catch (IOException e) {
-			throw new RuntimeException("Cannot open port 8080", e);
+			throw new RuntimeException(String.format("Cannot open port %s", this.serverPort), e);
 		}
 	}
 }
