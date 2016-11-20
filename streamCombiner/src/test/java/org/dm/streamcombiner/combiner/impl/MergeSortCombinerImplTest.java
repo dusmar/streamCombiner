@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.dm.streamcombiner.combiner.Combiner;
+import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,9 +20,10 @@ public class MergeSortCombinerImplTest {
 	 * items, no merging of amount is needed)
 	 * 
 	 * @throws IOException
+	 * @throws ReadFromStreamException 
 	 */
 	@Test
-	public void combine3InputsWithoutAmountMergeTest() throws IOException {
+	public void combine3InputsWithoutAmountMergeTest() throws IOException, ReadFromStreamException {
 		ClassLoader classLoader = getClass().getClassLoader();
 
 		String expectedResult = readFile("Data1Data2Data3.json");
@@ -38,9 +40,10 @@ public class MergeSortCombinerImplTest {
 	 * input streams are same
 	 * 
 	 * @throws IOException
+	 * @throws ReadFromStreamException 
 	 */
 	@Test
-	public void combine6SameInputsTest() throws IOException {
+	public void combine6SameInputsTest() throws IOException, ReadFromStreamException {
 		ClassLoader classLoader = getClass().getClassLoader();
 
 		String expectedResult = readFile("Data4Data5Data6.json");
@@ -56,9 +59,10 @@ public class MergeSortCombinerImplTest {
 	 * Tests combine algorithm for 1 simple input
 	 * 
 	 * @throws IOException
+	 * @throws ReadFromStreamException 
 	 */
 	@Test
-	public void combine1InputTest() throws IOException {
+	public void combine1InputTest() throws IOException, ReadFromStreamException {
 		ClassLoader classLoader = getClass().getClassLoader();
 
 		String expectedResult = readFile("Data1.json");
@@ -75,9 +79,10 @@ public class MergeSortCombinerImplTest {
 	 *      4, 5, 6 item from streams 8, 9, 10  
 	 *      6, 7 item from stream 9, 10
 	 * @throws IOException
+	 * @throws ReadFromStreamException 
 	 */
 	@Test
-	public void combine4InputsWithMergingTest() throws IOException {
+	public void combine4InputsWithMergingTest() throws IOException, ReadFromStreamException {
 		ClassLoader classLoader = getClass().getClassLoader();
 
 		String expectedResult = readFile("Data7Data8Data9Data10.json");

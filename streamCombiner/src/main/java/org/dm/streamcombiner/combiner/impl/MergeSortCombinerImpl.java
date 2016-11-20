@@ -14,11 +14,10 @@ import org.dm.streamcombiner.reader.impl.DataReaderFactory;
  * 
  * This class contains implementation of {@link Combiner} based on merge sort.
  * First entry from each stream is inserted into a heap
- * {@link MergePriorityQueue MergePriorityQueue}. Using EXTRACT-MIN the
- * smallest element X of the heap is obtained and written into output stream.
- * Assuming that X came from stream S, then the next element from stream S is
- * read and added into the heap. Continuing in this fashion yields the merged
- * stream.
+ * {@link MergePriorityQueue MergePriorityQueue}. Using EXTRACT-MIN the smallest
+ * element X of the heap is obtained and written into output stream. Assuming
+ * that X came from stream S, then the next element from stream S is read and
+ * added into the heap. Continuing in this fashion yields the merged stream.
  *
  * <p>
  * Implementation note: this implementation provides time complexity log(k) * n
@@ -38,18 +37,14 @@ public class MergeSortCombinerImpl implements Combiner {
 	 * @inheritDoc
 	 */
 	@Override
-	public void combine(InputStream[] inputs, OutputStream output) throws IOException {
+	public void combine(InputStream[] inputs, OutputStream output) throws ReadFromStreamException, IOException {
 		MergePriorityQueue heap = new MergePriorityQueue();
-		try {
-			initHeap(heap, inputs);
-			while (!heap.isEmpty()) {
-				MergeSortEntry entry = heap.poll();
-				output.write(entry.getData().toJSONString().getBytes());
-				DataReader decorator = entry.getDecorator();
-				insertNewEntryIntoHeap(decorator, heap);
-			}
-		} catch (ReadFromStreamException e) {
-			// TODO error handling
+		initHeap(heap, inputs);
+		while (!heap.isEmpty()) {
+			MergeSortEntry entry = heap.poll();
+			output.write(entry.getData().toJSONString().getBytes());
+			DataReader decorator = entry.getDecorator();
+			insertNewEntryIntoHeap(decorator, heap);
 		}
 
 	}

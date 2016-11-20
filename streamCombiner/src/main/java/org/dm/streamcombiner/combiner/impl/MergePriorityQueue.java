@@ -18,7 +18,7 @@ import org.dm.streamcombiner.combiner.impl.MergeSortCombinerImpl.MergeSortEntry;
  * Assuming that X is entry to be added to queue. If queue contains an entry Y
  * such that Y.Data.timestamp = X.Data.timestamp, then entries are 
  * {@link #merge(MergeSortEntry, MergeSortEntry) merged}, else X is added. An
- * internal {@link #timeStampIndices} is used to speed up that checking, so the
+ * internal Map {@link #timeStampIndices} is used to speed up that checking, so the
  * merge has no negative impact on add and poll time complexity.
  *  
  * @author Dusan Maruscak

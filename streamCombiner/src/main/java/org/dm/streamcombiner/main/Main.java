@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.dm.streamcombiner.combiner.Combiner;
 import org.dm.streamcombiner.combiner.impl.CombinerFactory;
+import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 /**
  * 
@@ -23,8 +24,8 @@ public class Main {
 	public static final String CONF_FILE = "config.properties";
 
 	/**
-	 * Create socket to connect to server. Timeouts are set to 2000 ms if input
-	 * stream hang.
+	 * Create socket to connect to server. Timeouts are set to 2000 ms to prevent from 
+	 * stream hanging.
 	 * 
 	 * @param host
 	 *            in format server:port
@@ -106,22 +107,23 @@ public class Main {
 	 * 
 	 * @param args
 	 * @throws IOException
+	 * @throws ReadFromStreamException 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ReadFromStreamException {
 		initConfiguration();
-		SingleThreadedServer server1, server2, server3;
-		new Thread(server1 = new SingleThreadedServer(8080, readFile("Data1.xml"))).start();
-		new Thread(server2 = new SingleThreadedServer(8081, readFile("Data2.xml"))).start();
-		new Thread(server3 = new SingleThreadedServer(8082, readFile("Data3.xml"))).start();
+		//SingleThreadedServer server1, server2, server3;
+		//new Thread(server1 = new SingleThreadedServer(8080, readFile("Data1.xml"))).start();
+		//new Thread(server2 = new SingleThreadedServer(8081, readFile("Data2.xml"))).start();
+		//new Thread(server3 = new SingleThreadedServer(8082, readFile("Data3.xml"))).start();
 		InputStream[] inputs = getInputStreams();
 		Combiner combiner = CombinerFactory.getCombiner();
 		combiner.combine(inputs, System.out);
 		for (InputStream input : inputs) {
 			input.close();
 		}
-		server1.stop();
-		server2.stop();
-		server3.stop();
+		//server1.stop();
+		//server2.stop();
+		//server3.stop();
 	}
 
 }

@@ -5,14 +5,23 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Java represention of XML fragment read from input stream.
  * 
  * @author Dusan Maruscak
- *
  */
+
 @XmlRootElement
 public class Data implements Cloneable, Serializable {
 
+	/**
+	 * Timestamp represented as Long because this field is used to determine
+	 * order in output stream.
+	 */
 	private Long timestamp;
+
+	/**
+	 * Amount represented as String because not many "merged" operations are expected.
+	 */
 	private String amount;
 
 	public Data(Long timestamp, String amount) {
@@ -50,8 +59,6 @@ public class Data implements Cloneable, Serializable {
 		return String.format("{ \"data\": { \"timestamp\":%d, \"amount\":\"%s\" }}%n", getTimestamp(), getAmount());
 	}
 
-	
-	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();

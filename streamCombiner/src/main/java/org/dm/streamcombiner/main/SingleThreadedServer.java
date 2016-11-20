@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Used for test purposes to simulate host (server) which handle requests from
+ * Used for test purposes to simulate host (server) which handles requests from
  * client (application) and returns data in expected format
  * 
  * @author Dusan Maruscak
