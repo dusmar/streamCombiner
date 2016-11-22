@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Java represention of XML fragment read from input stream.
+ * Represents data XML fragment.
  * 
  * @author Dusan Maruscak
  */

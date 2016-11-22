@@ -20,7 +20,7 @@ import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
  * 
  * Streaming API for XML requires valid XML document to be streamed. According
  * to XML spec, an XML document must have a single root element. If input stream
- * contains just fragments, it may be wraped by (@see RootWrapInputStreamReader)
+ * contains just fragments, it may be wraped by {@link RootWrapInputStreamReader RootWrapInputStreamReader}
  * 
  *
  * @see FileReader
