@@ -1,4 +1,4 @@
-package org.dm.streamcombiner.combiner.impl;
+package org.dm.streamcombiner.combiner;
 
 import org.dm.streamcombiner.model.Data;
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
@@ -23,20 +23,20 @@ public class MergePriorityQueueTest {
 		data2.setAmount("2");
 		data2.setTimestamp(2L);
 
-		MergePriorityQueue queue = new MergePriorityQueue();
-		queue.add(new MergeSortCombinerImpl.MergeSortEntry(data1, null));
-		queue.add(new MergeSortCombinerImpl.MergeSortEntry(data2, null));
+		MergeSortCombiner.MergePriorityQueue queue = new MergeSortCombiner.MergePriorityQueue();
+		queue.add(new MergeSortCombiner.MergeSortEntry(data1, null));
+		queue.add(new MergeSortCombiner.MergeSortEntry(data2, null));
 
-		MergeSortCombinerImpl.MergeSortEntry entry1 = queue.poll();
+		MergeSortCombiner.MergeSortEntry entry1 = queue.poll();
 		Assert.assertNotNull(entry1);
 		Assert.assertEquals(1L, entry1.getData().getTimestamp().longValue());
 
-		MergeSortCombinerImpl.MergeSortEntry entry2 = queue.poll();
+		MergeSortCombiner.MergeSortEntry entry2 = queue.poll();
 		Assert.assertNotNull(entry2);
 		Assert.assertEquals(2L, entry2.getData().getTimestamp().longValue());
 
 		
-		MergeSortCombinerImpl.MergeSortEntry entry3 = queue.poll();
+		MergeSortCombiner.MergeSortEntry entry3 = queue.poll();
 		Assert.assertNull(entry3);
 
 	}
@@ -64,23 +64,23 @@ public class MergePriorityQueueTest {
 		data3.setTimestamp(3L);
 
 		
-		MergePriorityQueue queue = new MergePriorityQueue();
-		queue.add(new MergeSortCombinerImpl.MergeSortEntry(data1, null));
-		queue.add(new MergeSortCombinerImpl.MergeSortEntry(data2, null));
-		queue.add(new MergeSortCombinerImpl.MergeSortEntry(data3, null));
+		MergeSortCombiner.MergePriorityQueue queue = new MergeSortCombiner.MergePriorityQueue();
+		queue.add(new MergeSortCombiner.MergeSortEntry(data1, null));
+		queue.add(new MergeSortCombiner.MergeSortEntry(data2, null));
+		queue.add(new MergeSortCombiner.MergeSortEntry(data3, null));
 
-		MergeSortCombinerImpl.MergeSortEntry entry1 = queue.poll();
+		MergeSortCombiner.MergeSortEntry entry1 = queue.poll();
 		Assert.assertNotNull(entry1);
 		Assert.assertEquals(1L, entry1.getData().getTimestamp().longValue());
 		Assert.assertEquals("3", entry1.getData().getAmount());
 
 		
-		MergeSortCombinerImpl.MergeSortEntry entry2 = queue.poll();
+		MergeSortCombiner.MergeSortEntry entry2 = queue.poll();
 		Assert.assertNotNull(entry2);
 		Assert.assertEquals(3L, entry2.getData().getTimestamp().longValue());
 
 		
-		MergeSortCombinerImpl.MergeSortEntry entry3 = queue.poll();
+		MergeSortCombiner.MergeSortEntry entry3 = queue.poll();
 		Assert.assertNull(entry3);
 
 	}

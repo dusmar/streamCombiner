@@ -1,8 +1,6 @@
-package org.dm.streamcombiner.reader.impl;
+package org.dm.streamcombiner.reader;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStreamReader;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -20,12 +18,10 @@ import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
  * 
  * Streaming API for XML requires valid XML document to be streamed. According
  * to XML spec, an XML document must have a single root element. If input stream
- * contains just fragments, it may be wraped by {@link RootWrapInputStreamReader RootWrapInputStreamReader}
+ * contains just fragments, it may be wraped by {@link RootWrapInputStreamReader
+ * RootWrapInputStreamReader}
  * 
  *
- * @see FileReader
- * @see InputStreamReader
- * @see java.nio.file.Files#newBufferedReader
  *
  * @author Dusan Maruscak
  */

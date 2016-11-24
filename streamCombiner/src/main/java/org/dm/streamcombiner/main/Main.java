@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.util.Properties;
 
 import org.dm.streamcombiner.combiner.Combiner;
-import org.dm.streamcombiner.combiner.impl.CombinerFactory;
+import org.dm.streamcombiner.combiner.CombinerFactory;
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 /**
@@ -121,6 +121,7 @@ public class Main {
 		for (InputStream input : inputs) {
 			input.close();
 		}
+		
 		//server1.stop();
 		//server2.stop();
 		//server3.stop();

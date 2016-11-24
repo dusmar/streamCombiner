@@ -1,8 +1,9 @@
-package org.dm.streamcombiner.reader.impl;
+package org.dm.streamcombiner.reader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 import org.junit.Assert;
@@ -32,7 +33,7 @@ public class DataReaderPerformanceTest {
 	public long staxTest() throws ReadFromStreamException, IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		StAXDataReader decorator = new StAXDataReader(new BufferedReader(
-				new RootWrapInputStreamReader(classLoader.getResourceAsStream("DataPerformance.xml"))));
+				new RootWrapInputStreamReader(classLoader.getResourceAsStream("DataPerformance.xml"), StandardCharsets.UTF_8)));
 
 		long start = System.currentTimeMillis();
 		int i = 0;

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
-
 /**
  * 
  * 
@@ -42,9 +40,10 @@ public interface Combiner {
 	 *            </pre>
 	 * 
 	 * 
-	 * @throws IOException
-	 * @throws ReadFromStreamException 
+	 * This method does not close either stream. 
+	 * @throws IOException if an I/O error occurs while writing to output stream 
+	 * 
 	 */
-	public void combine(InputStream[] inputs, OutputStream output) throws IOException, ReadFromStreamException;
+	public void combine(InputStream[] inputs, OutputStream output) throws IOException;
 
 }

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 
 @XmlRootElement
-public class Data implements Cloneable, Serializable {
+public class Data implements Serializable {
 
 	/**
 	 * Timestamp represented as Long because this field is used to determine
@@ -20,7 +20,8 @@ public class Data implements Cloneable, Serializable {
 	private Long timestamp;
 
 	/**
-	 * Amount represented as String because not many "merged" operations are expected.
+	 * Amount represented as String. Not to many "merged" operations are
+	 * expected. May be changed to BigDecimal in future
 	 */
 	private String amount;
 
@@ -53,15 +54,6 @@ public class Data implements Cloneable, Serializable {
 	@Override
 	public String toString() {
 		return "Amount [timestamp=" + timestamp + ", amount=" + amount + "]";
-	}
-
-	public String toJSONString() {
-		return String.format("{ \"data\": { \"timestamp\":%d, \"amount\":\"%s\" }}%n", getTimestamp(), getAmount());
-	}
-
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
 	}
 
 }

@@ -1,4 +1,4 @@
-package org.dm.streamcombiner.reader.impl;
+package org.dm.streamcombiner.reader;
 
 import org.dm.streamcombiner.model.Data;
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
