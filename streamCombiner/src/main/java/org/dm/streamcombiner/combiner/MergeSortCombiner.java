@@ -1,10 +1,8 @@
 package org.dm.streamcombiner.combiner;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +13,8 @@ import org.dm.streamcombiner.model.Data;
 import org.dm.streamcombiner.reader.DataReader;
 import org.dm.streamcombiner.reader.DataReaderFactory;
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
-import org.dm.streamcombiner.writter.JSONDataWritter;
+import org.dm.streamcombiner.writter.DataWritter;
+import org.dm.streamcombiner.writter.DataWritterFactory;
 
 /**
  * 
@@ -64,7 +63,7 @@ public class MergeSortCombiner implements Combiner {
 	public void combine(InputStream[] inputs, OutputStream output) throws IOException {
 		MergePriorityQueue heap = new MergePriorityQueue();
 		initQueue(heap, inputs); // Step 1
-		JSONDataWritter writter = new JSONDataWritter(new BufferedWriter(new OutputStreamWriter(output)));
+		DataWritter writter = DataWritterFactory.getDataWritter(output);
 		while (!heap.isEmpty()) { // Step 2
 			MergeSortEntry entry = heap.poll();
 			writter.writeData(entry.getData());

@@ -7,7 +7,7 @@ import org.dm.streamcombiner.model.Data;
 
 public class JSONDataWritter extends DataWritter {
 
-	public JSONDataWritter(BufferedWriter writter) {
+	protected JSONDataWritter(BufferedWriter writter) {
 		super(writter);
 	}
 

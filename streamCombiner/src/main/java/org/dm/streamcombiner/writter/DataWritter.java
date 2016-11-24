@@ -22,6 +22,8 @@ public abstract class DataWritter extends BufferedWriter {
 	public abstract void writeData(Data data) throws IOException;
 
 	/**
+	 * Just flush is done. Inner stream is not closed.
+	 * 
 	 * @throws IOException 
 	 * 
 	 */

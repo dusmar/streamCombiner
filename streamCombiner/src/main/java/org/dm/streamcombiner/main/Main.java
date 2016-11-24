@@ -111,10 +111,10 @@ public class Main {
 	 */
 	public static void main(String[] args) throws IOException, ReadFromStreamException {
 		initConfiguration();
-		//SingleThreadedServer server1, server2, server3;
-		//new Thread(server1 = new SingleThreadedServer(8080, readFile("Data1.xml"))).start();
-		//new Thread(server2 = new SingleThreadedServer(8081, readFile("Data2.xml"))).start();
-		//new Thread(server3 = new SingleThreadedServer(8082, readFile("Data3.xml"))).start();
+		SingleThreadedServer server1, server2, server3;
+		new Thread(server1 = new SingleThreadedServer(8080, readFile("Data1.xml"))).start();
+		new Thread(server2 = new SingleThreadedServer(8081, readFile("Data2.xml"))).start();
+		new Thread(server3 = new SingleThreadedServer(8082, readFile("Data3.xml"))).start();
 		InputStream[] inputs = getInputStreams();
 		Combiner combiner = CombinerFactory.getCombiner();
 		combiner.combine(inputs, System.out);
@@ -122,9 +122,9 @@ public class Main {
 			input.close();
 		}
 		
-		//server1.stop();
-		//server2.stop();
-		//server3.stop();
+		server1.stop();
+		server2.stop();
+		server3.stop();
 	}
 
 }
