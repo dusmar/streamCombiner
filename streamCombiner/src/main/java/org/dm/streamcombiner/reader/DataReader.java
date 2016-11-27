@@ -20,6 +20,13 @@ public abstract class DataReader extends BufferedReader {
 		super(reader);
 	}
 
+	/**
+	 * Reads Data object from stream.
+	 * 
+	 * @return Data Object or null if the end of the stream has been reached
+	 * @throws ReadFromStreamException
+	 *             If an I/O error occurs or Data object cannot be parsed 
+	 */
 	public abstract Data readData() throws ReadFromStreamException;
 
 }

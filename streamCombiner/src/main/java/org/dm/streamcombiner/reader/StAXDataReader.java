@@ -28,9 +28,9 @@ import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 public class StAXDataReader extends DataReader {
 
-	public static final Integer MAX_NUMBER_OF_EVENTS_TO_FOUND_AMOUNT = 100;
+	public static final Integer MAX_NUMBER_OF_EVENTS_TO_CHECK = 100;
 
-	public static final String MESSAGE_ELEMENT_NAME = "data";
+	public static final String DATA_ELEMENT_NAME = "data";
 	public static final String TIMESTAMP_ELEMENT_NAME = "timestamp";
 	public static final String AMOUNT_ELEMENT_NAME = "amount";
 
@@ -56,32 +56,67 @@ public class StAXDataReader extends DataReader {
 		Data data = null;
 		int numberOfEvent = 0;
 
-		while (eventReader.hasNext() && numberOfEvent < MAX_NUMBER_OF_EVENTS_TO_FOUND_AMOUNT) {
+		while (eventReader.hasNext()) {
 			try {
 				XMLEvent event = eventReader.nextEvent();
+				numberOfEvent++;
 
-				if (event.getEventType() == XMLStreamConstants.START_ELEMENT) {
-					if (event.asStartElement().getName().getLocalPart().equalsIgnoreCase(MESSAGE_ELEMENT_NAME)) {
-						data = new Data();
-					} else if (event.asStartElement().getName().getLocalPart()
-							.equalsIgnoreCase(TIMESTAMP_ELEMENT_NAME)) {
-						data.setTimestamp(Long.parseLong(getCurrentElementValue()));
+				if (isDataStart(event)) {
+					data = new Data();
+				}
 
-					} else if (event.asStartElement().getName().getLocalPart().equalsIgnoreCase(AMOUNT_ELEMENT_NAME)) {
-						data.setAmount(getCurrentElementValue());
+				if (isTimestampStart(event)) {
+					data.setTimestamp(Long.parseLong(getCurrentElementValue()));
+				}
 
-					}
+				if (isAmountStart(event)) {
+					data.setAmount(getCurrentElementValue());
+				}
 
+				if (isDataEnd(event)) {
 					if (isInitialized(data)) {
 						return data;
 					}
 				}
+				
+				if (numberOfEvent == MAX_NUMBER_OF_EVENTS_TO_CHECK) {
+					throw new ReadFromStreamException("Maximum number of events per single data object reached");
+				}
+
 			} catch (XMLStreamException e) {
 				throw new ReadFromStreamException(e);
 			}
-			numberOfEvent++;
 		}
 		return null;
+	}
+
+	private boolean isTimestampStart(XMLEvent event) {
+		return isStartElement(event, TIMESTAMP_ELEMENT_NAME);
+	}
+
+	private boolean isAmountStart(XMLEvent event) {
+		return isStartElement(event, AMOUNT_ELEMENT_NAME);
+	}
+
+	private boolean isDataStart(XMLEvent event) {
+		return isStartElement(event, DATA_ELEMENT_NAME);
+	}
+
+	private boolean isStartElement(XMLEvent event, String elementName) {
+		return (event.getEventType() == XMLStreamConstants.START_ELEMENT)
+				&& (event.asStartElement().getName().getLocalPart().equalsIgnoreCase(elementName));
+
+	}
+
+	private boolean isEndElement(XMLEvent event, String elementName) {
+		return (event.getEventType() == XMLStreamConstants.END_ELEMENT)
+				&& (event.asEndElement().getName().getLocalPart().equalsIgnoreCase(elementName));
+
+	}
+
+	private boolean isDataEnd(XMLEvent event) {
+		return isEndElement(event, DATA_ELEMENT_NAME);
+
 	}
 
 	private boolean isInitialized(Data data) {
