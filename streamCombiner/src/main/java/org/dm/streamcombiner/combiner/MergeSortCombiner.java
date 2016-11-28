@@ -50,10 +50,6 @@ public class MergeSortCombiner implements Combiner {
 	 * MergeSortCombiner.MergeSortEntry(DataObject, Stream)). Continuing in this
 	 * fashion yields the merged stream.
 	 * 
-	 * <p>
-	 * Implementation note: this implementation provides time complexity log(k)
-	 * n where k is number of streams and n is number of total elements.
-	 * 
 	 * @throws IOException
 	 *             if an I/O error occurs while writing to output stream
 	 * 
@@ -61,14 +57,14 @@ public class MergeSortCombiner implements Combiner {
 	 */
 	@Override
 	public void combine(InputStream[] inputs, OutputStream output) throws IOException {
-		MergePriorityQueue heap = new MergePriorityQueue();
-		initQueue(heap, inputs); // Step 1
+		MergePriorityQueue queue = new MergePriorityQueue();
+		initQueue(queue, inputs); // Step 1
 		DataWritter writter = DataWritterFactory.getDataWritter(output);
-		while (!heap.isEmpty()) { // Step 2
-			MergeSortEntry entry = heap.poll();
+		while (!queue.isEmpty()) { // Step 2
+			MergeSortEntry entry = queue.poll();
 			writter.writeData(entry.getData());
 			DataReader decorator = entry.getDecorator();
-			insertNewEntryIntoHeap(decorator, heap);
+			insertNewEntryIntoHeap(decorator, queue);
 		}
 		writter.closeDataWritter(); // close wrapped stream
 	}

@@ -1,9 +1,7 @@
 package org.dm.streamcombiner.main;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -16,6 +14,7 @@ import org.dm.streamcombiner.combiner.CombinerFactory;
 import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 /**
+ * Main combiner class
  * 
  * @author Dusan Maruscak
  *
@@ -29,86 +28,102 @@ public class Main {
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
 	/**
-	 * Create socket to connect to server. Timeout is specified CONF_FILE file
-	 * to prevent from stream hanging.
+	 * Parses input param to string hostname and numeric port and returns socket
+	 * input stream related to parsed hostname and port
+	 * 
 	 * 
 	 * @param host
-	 *            in format server:port
-	 * @return InputStream to read data from server
-	 * @throws IOException
+	 *            in format hostname:port
+	 * @return InputStream to read data from
 	 */
-	public static InputStream stringToStream(String host) {
-		String[] hostAndPort = host.split(":");
-		if (hostAndPort.length != 2) {
-			LOGGER.warning(String.format("'%s' not in expected format host:port. Will be ignored ", host));
+	private static InputStream stringToStream(String host) {
+		String[] hostNameAndPort = host.split(":");
+		if (hostNameAndPort.length != 2) {
+			LOGGER.warning(
+					String.format("Host '%s' is not in expected format hostname:port thus it will be ignored ", host));
 			return null;
 		}
-		String hostName = hostAndPort[0];
+		String hostName = hostNameAndPort[0];
 		int portNumber = 0;
 		try {
-			portNumber = Integer.parseInt(hostAndPort[1]);
+			portNumber = Integer.parseInt(hostNameAndPort[1]);
 		} catch (NumberFormatException e) {
-			LOGGER.warning(String.format("Cannot parse host for %s. Will be ignored ", host));
+			LOGGER.warning(
+					String.format("Cannot parse port '%s'. Host '%s' will be ignored ", hostNameAndPort[1], host));
 			return null;
 
 		}
 
 		try {
-			Socket socket = new Socket();
-			socket.connect(new InetSocketAddress(hostName, portNumber), timeout);
-			socket.setSoTimeout(timeout);
-			InputStream input = socket.getInputStream();
-			return input;
+			return getStream(hostName, portNumber);
 		} catch (IOException ex) {
-			LOGGER.warning(String.format("Can't connect  to %s. Skipped", host));
+			LOGGER.warning(String.format("Can't connect  to '%s'. Skipped", host));
 		}
 		return null;
 
 	}
 
 	/**
-	 * Read configurations from config.properties file
+	 * Creates socket from input params. Timeout to prevent from hanging is set. Timeout value can be
+	 * specified in CONF_FILE file (default is 2000ms) .
+	 * 
+	 * @param hostName
+	 * @param portNumber
+	 * @return
+	 * @throws IOException
+	 */
+	private static InputStream getStream(final String hostName, final int portNumber) throws IOException {
+		Socket socket = new Socket();
+		socket.connect(new InetSocketAddress(hostName, portNumber), timeout);
+		socket.setSoTimeout(timeout);
+		InputStream input = socket.getInputStream();
+		return input;
+	}
+
+	/**
+	 * Reads configuration from config.properties file
 	 * 
 	 * @throws IOException
 	 */
-	public static void initConfiguration() throws IOException {
+	private static void initConfiguration() throws IOException {
 		InputStream input = Main.class.getClassLoader().getResourceAsStream(CONF_FILE);
 		configuration = new Properties();
 		configuration.load(input);
 	}
 
-	/**
-	 * Read content of file. Just just to create response of test servers.
-	 * 
-	 * @param file
-	 * @return
-	 * @throws IOException
-	 */
-	private static String readFile(String file) throws IOException {
-		ClassLoader classLoader = Main.class.getClassLoader();
-		String line = null;
-		StringBuilder stringBuilder = new StringBuilder();
-		String ls = System.getProperty("line.separator");
-
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(file)))) {
-
-			while ((line = br.readLine()) != null) {
-				stringBuilder.append(line);
-				stringBuilder.append(ls);
-			}
-			return stringBuilder.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	// /**
+	// * Read content of file. Just just to create response of test servers.
+	// *
+	// * @param file
+	// * @return
+	// * @throws IOException
+	// */
+	// private static String readFile(String file) throws IOException {
+	// ClassLoader classLoader = Main.class.getClassLoader();
+	// String line = null;
+	// StringBuilder stringBuilder = new StringBuilder();
+	// String ls = System.getProperty("line.separator");
+	//
+	// try (BufferedReader br = new BufferedReader(new
+	// InputStreamReader(classLoader.getResourceAsStream(file)))) {
+	//
+	// while ((line = br.readLine()) != null) {
+	// stringBuilder.append(line);
+	// stringBuilder.append(ls);
+	// }
+	// return stringBuilder.toString();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// return null;
+	// }
 
 	/**
 	 * Prepares array of InputStreams based on configuration
 	 * 
 	 * @return
 	 */
-	public static InputStream[] getInputStreams() {
+	private static InputStream[] getInputStreams() {
 		String hosts = configuration.getProperty("hosts");
 		if (hosts == null || hosts.isEmpty()) {
 			LOGGER.severe("Can't find host property");
@@ -135,7 +150,9 @@ public class Main {
 
 	/**
 	 * Main method of Stream Combiner application. List of hosts is read from
-	 * config.properties file
+	 * CONF_FILE file. Sockets are opened and corresponding input streams are
+	 * passed to MergeSortCombiner.combine method together with Standard Output
+	 * Stream
 	 * 
 	 * @param args
 	 * @throws IOException
@@ -143,10 +160,13 @@ public class Main {
 	 */
 	public static void main(String[] args) throws IOException, ReadFromStreamException {
 		initConfiguration();
-		SingleThreadedServer server1, server2, server3;
-		new Thread(server1 = new SingleThreadedServer(8080, readFile("Data1.xml"))).start();
-		new Thread(server2 = new SingleThreadedServer(8081, readFile("Data2.xml"))).start();
-		new Thread(server3 = new SingleThreadedServer(8082, readFile("Data3.xml"))).start();
+		// SingleThreadedServer server1, server2, server3;
+		// new Thread(server1 = new SingleThreadedServer(8080,
+		// readFile("Data1.xml"))).start();
+		// new Thread(server2 = new SingleThreadedServer(8081,
+		// readFile("Data2.xml"))).start();
+		// new Thread(server3 = new SingleThreadedServer(8082,
+		// readFile("Data3.xml"))).start();
 		InputStream[] inputs = getInputStreams();
 		if (inputs != null) {
 			Combiner combiner = CombinerFactory.getCombiner();
@@ -156,9 +176,9 @@ public class Main {
 			}
 		}
 
-		server1.stop();
-		server2.stop();
-		server3.stop();
+		// server1.stop();
+		// server2.stop();
+		// server3.stop();
 	}
 
 }

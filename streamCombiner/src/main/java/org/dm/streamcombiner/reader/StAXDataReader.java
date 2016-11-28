@@ -28,8 +28,6 @@ import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
 
 public class StAXDataReader extends DataReader {
 
-	public static final Integer MAX_NUMBER_OF_EVENTS_TO_CHECK = 100;
-
 	public static final String DATA_ELEMENT_NAME = "data";
 	public static final String TIMESTAMP_ELEMENT_NAME = "timestamp";
 	public static final String AMOUNT_ELEMENT_NAME = "amount";
@@ -52,14 +50,21 @@ public class StAXDataReader extends DataReader {
 
 	}
 
+	/**
+	 * Reads Data object from stream. Iterates through StAX events. If start
+	 * element <data> is found, new Data Object is created. Then corresponding
+	 * events are handled and Data Object is initialized.
+	 * 
+	 * @return Data Object or null if the end of the stream has been reached
+	 * @throws ReadFromStreamException
+	 *             If an I/O error occurs or Data object cannot be parsed
+	 */
 	public Data readData() throws ReadFromStreamException {
 		Data data = null;
-		int numberOfEvent = 0;
 
 		while (eventReader.hasNext()) {
 			try {
 				XMLEvent event = eventReader.nextEvent();
-				numberOfEvent++;
 
 				if (isDataStart(event)) {
 					data = new Data();
@@ -77,10 +82,6 @@ public class StAXDataReader extends DataReader {
 					if (isInitialized(data)) {
 						return data;
 					}
-				}
-				
-				if (numberOfEvent == MAX_NUMBER_OF_EVENTS_TO_CHECK) {
-					throw new ReadFromStreamException("Maximum number of events per single data object reached");
 				}
 
 			} catch (XMLStreamException e) {
