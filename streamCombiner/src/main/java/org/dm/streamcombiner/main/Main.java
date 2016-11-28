@@ -104,7 +104,7 @@ public class Main {
 	}
 
 	/**
-	 * Prepares input, array of InputStream based on configuration
+	 * Prepares array of InputStreams based on configuration
 	 * 
 	 * @return
 	 */

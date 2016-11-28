@@ -1,7 +1,6 @@
 package org.dm.streamcombiner.reader;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.SequenceInputStream;
@@ -15,10 +14,6 @@ import java.util.List;
  * fragments (@see StAXDataReader). RootWrapInputStreamReader wraps content of
  * InputStreamReader with a root element
  * 
- * @see FileReader
- * @see InputStreamReader
- * @see java.nio.file.Files#newBufferedReader
- *
  * @author Dusan Maruscak
  */
 

@@ -9,8 +9,6 @@ import org.dm.streamcombiner.reader.exception.ReadFromStreamException;
  * Reads Data objects from a buffered character-input stream
  *
  *
- *
- *
  * @author Dusan Maruscak
  */
 
@@ -25,7 +23,7 @@ public abstract class DataReader extends BufferedReader {
 	 * 
 	 * @return Data Object or null if the end of the stream has been reached
 	 * @throws ReadFromStreamException
-	 *             If an I/O error occurs or Data object cannot be parsed 
+	 *             If an I/O error occurs or Data object cannot be parsed
 	 */
 	public abstract Data readData() throws ReadFromStreamException;
 
