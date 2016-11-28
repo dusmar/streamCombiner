@@ -49,6 +49,18 @@ public abstract class DataReaderTest {
 		testItemFully(123456787L, "1237.567890", decorator);
 		Assert.assertNull(decorator.readData());
 	}
+	
+	/**
+	 * Tests a stream with invalid xml 
+	 * 
+	 * @throws ReadFromStreamException
+	 */
+	@Test(expected=org.dm.streamcombiner.reader.exception.ReadFromStreamException.class)
+	public void invalidDataTest() throws ReadFromStreamException {
+		DataReader decorator = getDecorator("Invalid.xml");
+		Data data1 = decorator.readData();
+
+	}
 
 	/**
 	 * Tests nextData (compare result with
